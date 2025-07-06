@@ -1,9 +1,11 @@
 <?php
 /**
- * Plugin Name:       AI-Wp By Nullpk
+ * Plugin Name:       AI WP – Intelligent Chatbot for WordPress
  * Description:       A fully-featured, intelligent, AI-powered chatbox for your WordPress site.
  * Version:           1.0 
- * Author:            Naqash Afzal
+ * Author:            Nullpk
+ * License:           GPLv2 or later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly.
 
@@ -40,7 +42,7 @@ function aicb_setup_guide_admin_notice() {
     if ( !isset($options['aicb_gemini_api_key']) || empty($options['aicb_gemini_api_key']) ) {
         $settings_url = admin_url('admin.php?page=aicb-settings&tab=api');
         echo '<div class="notice notice-warning is-dismissible">';
-        echo '<p><strong>Welcome to AI Chatbox!</strong> To get started, please <a href="' . esc_url($settings_url) . '">enter your Google Gemini API key</a>.</p>';
+        echo '<p><strong>Welcome to AI WP!</strong> To get started, please <a href="' . esc_url($settings_url) . '">enter your Google Gemini API key</a>.</p>';
         echo '</div>';
     }
 }
