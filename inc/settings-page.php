@@ -13,7 +13,7 @@ function aicb_render_settings_page() {
         <div class="aicb-settings-sidebar">
             <div class="aicb-sidebar-header">
                 <span class="dashicons dashicons-format-chat"></span>
-                <h2>AI Chatbox</h2>
+                <h2>AI WP</h2>
             </div>
             <ul class="aicb-settings-menu">
                 <li><a href="?page=aicb-analytics"><span class="dashicons dashicons-chart-area"></span> Analytics</a></li>
@@ -29,6 +29,9 @@ function aicb_render_settings_page() {
                 <li><a href="?page=aicb-settings&tab=misc" class="aicb-settings-menu-item"><span class="dashicons dashicons-admin-settings"></span> Miscellaneous</a></li>
                 <li><a href="?page=aicb-settings&tab=shortcodes"><span class="dashicons dashicons-editor-code"></span> Shortcodes</a></li>
             </ul>
+            <div class="aicb-settings-footer">
+                Developed by <a href="https://nullpk.com" target="_blank">Nullpk</a>
+            </div>
         </div>
         <div class="aicb-settings-content">
             <?php
@@ -97,7 +100,7 @@ function aicb_render_shortcodes_tab() {
             <thead><tr><th style="width: 30%;">Shortcode</th><th>Description</th></tr></thead>
             <tbody>
                 <tr><td><code>[ai_chatbox]</code></td><td>Displays the main chatbox interface.</td></tr>
-                <tr><td><code>[intelligent_content_links]</code></td><td>Displays a list of recommended articles based on the visitor's recent browsing history.</td></tr>
+                <tr><td><code>[intelligent_content_links]</code></td><td>Displays a list of recommended articles based on the visitor's recent Browse history.</td></tr>
             </tbody>
         </table>
     </div>
