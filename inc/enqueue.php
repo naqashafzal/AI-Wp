@@ -11,6 +11,7 @@ function aicb_enqueue_frontend_assets() {
         'enable_personalized_welcome' => isset($options['aicb_enable_personalized_welcome']) ? (bool)$options['aicb_enable_personalized_welcome'] : false,
         'autocomplete_enabled' => isset($options['aicb_enable_autocomplete']) ? (bool)$options['aicb_enable_autocomplete'] : true,
         'enable_memory' => isset($options['aicb_enable_memory']) ? (bool)$options['aicb_enable_memory'] : true,
+        'content_display_mode' => isset($options['aicb_content_display_mode']) ? $options['aicb_content_display_mode'] : 'in_chatbox',
     );
 
     if (isset($options['aicb_enable_personalized_welcome']) && $options['aicb_enable_personalized_welcome']) {

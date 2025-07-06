@@ -19,7 +19,7 @@ function aicb_get_fallback_suggestions( $query ) {
     if ( $related_query->have_posts() ) {
         while ( $related_query->have_posts() ) {
             $related_query->the_post();
-            $posts_array[] = ['id' => get_the_ID(), 'title' => get_the_title()];
+            $posts_array[] = ['id' => get_the_ID(), 'title' => get_the_title(), 'url' => get_permalink()];
         }
         wp_reset_postdata();
     }
@@ -37,7 +37,7 @@ function aicb_get_fallback_suggestions( $query ) {
             if (isset($post_item['is_ad'])) {
                 $suggestions_html .= '<li class="aicb-inline-ad"><a href="' . esc_url($post_item['url']) . '" target="_blank">' . esc_html($post_item['title']) . '</a></li>';
             } else {
-                $suggestions_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . esc_attr($post_item['id']) . '">' . esc_html($post_item['title']) . '</a></li>';
+                $suggestions_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . esc_attr($post_item['id']) . '" data-permalink="' . esc_url($post_item['url']) . '">' . esc_html($post_item['title']) . '</a></li>';
             }
         }
         $suggestions_html .= '</ul></div>';
@@ -158,7 +158,7 @@ function aicb_perform_advanced_search($user_query, $api_key, $options = [], $ad_
         while ($search_query->have_posts()) {
             $search_query->the_post();
             $context .= "Content from '" . get_the_title() . "': " . wp_strip_all_tags(get_the_content()) . "\n\n";
-            $sources[] = ['id' => get_the_ID(), 'title' => get_the_title()];
+            $sources[] = ['id' => get_the_ID(), 'title' => get_the_title(), 'url' => get_permalink()];
         }
         wp_reset_postdata();
     }
@@ -185,7 +185,7 @@ function aicb_perform_advanced_search($user_query, $api_key, $options = [], $ad_
             if (isset($source['is_ad'])) {
                  $sources_html .= '<li class="aicb-inline-ad"><a href="' . esc_url($source['url']) . '" target="_blank">' . esc_html($source['title']) . '</a></li>';
             } else {
-                $sources_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . esc_attr($source['id']) . '">' . esc_html($source['title']) . '</a></li>';
+                $sources_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . esc_attr($source['id']) . '" data-permalink="' . esc_url($source['url']) . '">' . esc_html($source['title']) . '</a></li>';
             }
         }
         $sources_html .= '</ul></div>';
@@ -248,7 +248,7 @@ function aicb_perform_simple_search($user_query, $ad_code = null) {
                 $response_html .= '<li class="aicb-inline-ad"><a href="' . esc_url($options['aicb_inline_ad_url']) . '" target="_blank">' . esc_html($inline_ad_text) . '</a></li>';
                 $ad_injected = true;
             }
-            $response_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . get_the_ID() . '">' . get_the_title() . '</a></li>';
+            $response_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . get_the_ID() . '" data-permalink="' . get_permalink() . '">' . get_the_title() . '</a></li>';
             $counter++;
         }
         $response_html .= '</ul>';

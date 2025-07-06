@@ -21,7 +21,19 @@ jQuery(document).ready(function($) {
     // --- Content Loader Logic ---
     messagesContainer.on('click', '.aicb-content-loader', function(e) {
         e.preventDefault();
-        const postId = $(this).data('post-id');
+        const link = $(this);
+        const postId = link.data('post-id');
+        
+        // New logic based on the setting
+        if (aicb_settings.content_display_mode === 'new_tab') {
+            const permalink = link.data('permalink');
+            if (permalink) {
+                window.open(permalink, '_blank');
+            }
+            return; // Stop execution for new tab
+        }
+
+        // Existing logic for "in_chatbox" mode
         if (!postId) return;
 
         // Hide chat and show spinner

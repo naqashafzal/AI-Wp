@@ -157,6 +157,16 @@ jQuery(document).ready(function($) {
             }
         });
     });
+
+    // --- Content Loader Logic for Floating Widget ---
+    messagesArea.on('click', '.aicb-content-loader', function(e) {
+        e.preventDefault();
+        const link = $(this);
+        const permalink = link.data('permalink');
+        if (permalink) {
+            window.open(permalink, '_blank');
+        }
+    });
     
     // Auto-resize textarea
     input.on('input', function () {

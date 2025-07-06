@@ -100,7 +100,7 @@ function aicb_render_shortcodes_tab() {
             <thead><tr><th style="width: 30%;">Shortcode</th><th>Description</th></tr></thead>
             <tbody>
                 <tr><td><code>[ai_chatbox]</code></td><td>Displays the main chatbox interface.</td></tr>
-                <tr><td><code>[intelligent_content_links]</code></td><td>Displays a list of recommended articles based on the visitor's recent Browse history.</td></tr>
+                <tr><td><code>[intelligent_content_links]</code></td><td>Displays a list of recommended articles based on the visitor's recent browsing history.</td></tr>
             </tbody>
         </table>
     </div>
@@ -159,6 +159,7 @@ function aicb_register_settings() {
     
     // Display Settings
     add_settings_section('aicb_display_settings', 'Post-Answer Display', null, 'aicb_display_settings');
+    add_settings_field('aicb_content_display_mode', 'Content Link Behavior', 'aicb_content_display_mode_callback', 'aicb_display_settings', 'aicb_display_settings');
     add_settings_field('aicb_show_sources', 'Show Source Links', 'aicb_show_sources_callback', 'aicb_display_settings', 'aicb_display_settings');
     add_settings_field('aicb_show_ad', 'Show an Ad', 'aicb_show_ad_callback', 'aicb_display_settings', 'aicb_display_settings');
     add_settings_field('aicb_custom_ad_code', 'Custom Ad Code', 'aicb_custom_ad_code_callback', 'aicb_display_settings', 'aicb_display_settings');
@@ -201,6 +202,7 @@ function aicb_sanitize_settings( $input ) {
     if (isset($input['aicb_launcher_cta_text'])) $new_input['aicb_launcher_cta_text'] = sanitize_text_field($input['aicb_launcher_cta_text']);
     if (isset($input['aicb_footer_text'])) $new_input['aicb_footer_text'] = sanitize_text_field($input['aicb_footer_text']);
     if (isset($input['aicb_custom_ad_code'])) $new_input['aicb_custom_ad_code'] = $input['aicb_custom_ad_code'];
+    if (isset($input['aicb_content_display_mode'])) $new_input['aicb_content_display_mode'] = sanitize_text_field($input['aicb_content_display_mode']);
     return $new_input;
 }
 
@@ -331,6 +333,19 @@ function aicb_enable_autocomplete_callback() {
     $checked = isset( $options['aicb_enable_autocomplete'] ) ? $options['aicb_enable_autocomplete'] : 1;
     echo '<label><input type="checkbox" name="aicb_settings[aicb_enable_autocomplete]" value="1"' . checked( 1, $checked, false ) . '/> Show a "ghost text" suggestion as the user types.</label>';
 }
+
+function aicb_content_display_mode_callback() {
+    $options = get_option('aicb_settings');
+    $value = isset($options['aicb_content_display_mode']) ? $options['aicb_content_display_mode'] : 'in_chatbox';
+    ?>
+    <select name="aicb_settings[aicb_content_display_mode]">
+        <option value="in_chatbox" <?php selected($value, 'in_chatbox'); ?>>Open in Chatbox Viewer</option>
+        <option value="new_tab" <?php selected($value, 'new_tab'); ?>>Open in New Tab</option>
+    </select>
+    <p class="description">Choose how content links (like search results or sources) should open when clicked.</p>
+    <?php
+}
+
 function aicb_show_sources_callback() {
     $options = get_option('aicb_settings');
     $checked = isset($options['aicb_show_sources']) ? $options['aicb_show_sources'] : 0;
