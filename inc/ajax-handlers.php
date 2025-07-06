@@ -111,7 +111,7 @@ function aicb_handle_ai_query() {
     $user_query = isset($_POST['query']) ? sanitize_text_field($_POST['query']) : '';
     if (empty($user_query)) { wp_send_json_error(['answer' => 'Query cannot be empty.']); return; }
 
-    $cache_key = 'aicb_query_' . md5($user_query);
+    $cache_key = 'aicb_query_v2_' . md5($user_query);
     $cached_response = get_transient($cache_key);
     if (false !== $cached_response) {
         wp_send_json_success($cached_response);
@@ -146,7 +146,7 @@ function aicb_handle_ai_query() {
 
 
 function aicb_perform_advanced_search($user_query, $api_key, $options = [], $ad_code = null) {
-    $cache_key = 'aicb_query_' . md5($user_query); 
+    $cache_key = 'aicb_query_v2_' . md5($user_query); 
     $history_json = isset($_POST['history']) ? stripslashes($_POST['history']) : '[]';
     $chat_history = json_decode($history_json, true);
     if (!is_array($chat_history)) { $chat_history = []; }
@@ -232,7 +232,7 @@ function aicb_perform_advanced_search($user_query, $api_key, $options = [], $ad_
 }
 
 function aicb_perform_simple_search($user_query, $ad_code = null) {
-    $cache_key = 'aicb_query_' . md5($user_query);
+    $cache_key = 'aicb_query_v2_' . md5($user_query);
     $options = get_option('aicb_settings');
     $inline_ad_text = isset($options['aicb_inline_ad_text']) ? trim($options['aicb_inline_ad_text']) : '';
     $ad_position = isset($options['aicb_inline_ad_position']) ? absint($options['aicb_inline_ad_position']) : 3;

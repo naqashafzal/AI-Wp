@@ -22,9 +22,8 @@ jQuery(document).ready(function($) {
     messagesContainer.on('click', '.aicb-content-loader', function(e) {
         e.preventDefault();
         const link = $(this);
-        const postId = link.data('post-id');
         
-        // New logic based on the setting
+        // Logic to open in a new tab if the setting is selected
         if (aicb_settings.content_display_mode === 'new_tab') {
             const permalink = link.data('permalink');
             if (permalink) {
@@ -34,6 +33,7 @@ jQuery(document).ready(function($) {
         }
 
         // Existing logic for "in_chatbox" mode
+        const postId = link.data('post-id');
         if (!postId) return;
 
         // Hide chat and show spinner
@@ -149,6 +149,7 @@ jQuery(document).ready(function($) {
             chatForm.submit();
         }
     });
+
     getPersonalizedWelcome();
     initializeAutocomplete();
 });
