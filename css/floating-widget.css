@@ -1,0 +1,304 @@
+/*
+--- AI Chatbox Floating Widget Styles ---
+Version: 42.0 (Engaging Launcher Update)
+*/
+
+/* --- Keyframe Animations --- */
+@keyframes aicb-fade-in-up {
+    from { opacity: 0; transform: translateY(10px) scale(0.9); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes aicb-pulse-bubble {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes aicb-bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+
+/* --- Main Widget Container & Launcher --- */
+#aicb-floating-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999999;
+}
+
+#aicb-launcher {
+    width: 60px;
+    height: 60px;
+    background-color: #2563eb;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    position: relative; /* Needed for the badge */
+    animation: aicb-bob 3s infinite ease-in-out; /* Engaging bobbing animation */
+}
+
+#aicb-launcher svg {
+    width: 32px;
+    height: 32px;
+    color: white;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+#aicb-launcher:hover {
+    transform: scale(1.1);
+    background-color: #1d4ed8;
+    animation-play-state: paused; /* Pause animation on hover */
+}
+
+/* --- New: Launcher Call-to-Action Bubble --- */
+.aicb-launcher-text-bubble {
+    position: absolute;
+    right: 75px; /* Position to the left of the launcher */
+    bottom: 10px;
+    background-color: #ffffff;
+    color: #1f2937;
+    padding: 8px 16px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-size: 15px;
+    font-weight: 500;
+    white-space: nowrap;
+    transform-origin: right center;
+    pointer-events: none;
+    opacity: 0; /* Start hidden, fade in with animation */
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    /* Animation sequence: fade in after 1s, then start pulsing after 1.5s */
+    animation: aicb-fade-in-up 0.5s 1s ease-out forwards, aicb-pulse-bubble 2.5s 1.5s infinite ease-in-out;
+}
+
+/* Triangle pointing to the launcher icon */
+.aicb-launcher-text-bubble::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -8px;
+    margin-top: -8px;
+    border-width: 8px;
+    border-style: solid;
+    border-color: transparent transparent transparent #ffffff;
+}
+
+/* --- Chat Window --- */
+.aicb-float-window {
+    position: absolute;
+    bottom: 80px;
+    right: 0;
+    width: 400px;
+    height: 70vh;
+    max-height: 600px;
+    background-color: #1e1f20; /* Dark background for the window */
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+    transform-origin: bottom right;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+}
+
+#aicb-floating-widget.active .aicb-float-window {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+/* Hide text bubble and notification when chat is active */
+#aicb-floating-widget.active .aicb-launcher-text-bubble,
+#aicb-floating-widget.active .aicb-launcher-badge {
+    animation: none;
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+}
+
+#aicb-floating-widget.active #aicb-launcher {
+    animation: none; /* Stop bobbing when active */
+}
+
+#aicb-floating-widget.active #aicb-launcher svg {
+    transform: rotate(135deg);
+}
+
+/* --- Message Area --- */
+.aicb-float-messages-area {
+    flex-grow: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    background-color: #131314; /* Main chat background */
+}
+
+.aicb-float-message-wrapper { display: flex; max-width: 85%; }
+.aicb-float-ai-wrapper { justify-content: flex-start; }
+.aicb-float-user-wrapper { justify-content: flex-end; align-self: flex-end; }
+
+.aicb-float-message {
+    padding: 0.625rem 1rem;
+    border-radius: 1.25rem;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    color: #e3e3e3;
+    position: relative;
+}
+.aicb-float-message a { color: #8ab4f8; text-decoration: none; }
+.aicb-float-message a:hover { text-decoration: underline; }
+
+.aicb-float-ai-message { background-color: #2e2f33; }
+.aicb-float-user-message { background-color: #1a3a7a; }
+
+
+/* --- UX: Thinking Indicator --- */
+.thinking-indicator {
+    padding: 1rem 1.25rem;
+}
+.thinking-indicator .dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #8ab4f8;
+    animation: thinking-pulse 1.4s infinite ease-in-out both;
+}
+.thinking-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+.thinking-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+@keyframes thinking-pulse {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1.0); }
+}
+
+/* --- Advanced: Conversation Ratings --- */
+.aicb-ratings {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #4b5563;
+}
+.aicb-rating-thumb {
+    cursor: pointer;
+    font-size: 1.1rem;
+    margin-right: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+.aicb-rating-thumb:hover {
+    opacity: 1;
+}
+.aicb-ratings.rated .aicb-rating-thumb {
+    cursor: default;
+    opacity: 0.4;
+}
+
+
+/* --- Input Area --- */
+.aicb-float-input-container {
+    padding: 1rem;
+    border-top: 1px solid #374151;
+    background-color: #1e1f20;
+}
+
+.aicb-float-form {
+    background-color: #2e2f33;
+    border-radius: 1.75rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5rem;
+}
+
+.aicb-float-input-wrapper {
+    flex-grow: 1;
+}
+
+.aicb-float-form textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e3e3e3;
+    font-size: 1rem;
+    resize: none;
+    line-height: 1.5;
+    max-height: 120px;
+    overflow-y: auto;
+}
+
+.aicb-float-send-button {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.2s;
+}
+.aicb-float-send-button:hover { background-color: #1d4ed8; }
+.aicb-float-send-button svg { width: 1.25rem; height: 1.25rem; }
+
+/* --- Notification Badge --- */
+.aicb-launcher-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #d63638;
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #1e1f20;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    transform: scale(1);
+    opacity: 1;
+}
+
+/* --- Mobile Responsive --- */
+@media (max-width: 480px) {
+    #aicb-floating-widget {
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; 
+    }
+    #aicb-floating-widget.active { pointer-events: auto; }
+    .aicb-float-window {
+        width: 100%;
+        height: 100%;
+        bottom: 0;
+        right: 0;
+        max-height: 100%;
+        border-radius: 0;
+        transform: translateY(100%);
+    }
+    #aicb-floating-widget.active .aicb-float-window { transform: translateY(0); }
+    #aicb-launcher { position: absolute; bottom: 20px; right: 20px; z-index: 1000; }
+    /* Hide the text bubble on mobile to save space */
+    .aicb-launcher-text-bubble {
+        display: none;
+    }
+}
