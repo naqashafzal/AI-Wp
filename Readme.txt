@@ -1,4 +1,4 @@
-=== AI WP – Intelligent Chatbot for WordPress ===
+=== AI WP – Intelligent Chatbot ===
 Contributors: Nullpk
 Tags: chatbot, ai, gemini, google, wordpress, plugin, artificial intelligence, chat
 Requires at least: 5.0

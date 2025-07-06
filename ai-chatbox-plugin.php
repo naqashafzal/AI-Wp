@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       AI WP – Intelligent Chatbot for WordPress
+ * Plugin Name:       AI WP – Intelligent Chatbot
  * Description:       A fully-featured, intelligent, AI-powered chatbox for your WordPress site.
  * Version:           1.0 
  * Author:            Nullpk
