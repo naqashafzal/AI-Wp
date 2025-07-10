@@ -1,6 +1,6 @@
 /*
 --- AI Chatbox Floating Widget Styles ---
-Version: 43.0 (Link Action Buttons)
+Version: 43.4 (Colorful Fullscreen Button)
 */
 
 /* --- Keyframe Animations --- */
@@ -313,68 +313,6 @@ Version: 43.0 (Link Action Buttons)
     background-color: #1d4ed8;
 }
 
-/* --- NEW: Link Action Button Styles --- */
-.aicb-related-container ul li,
-.aicb-sources-container ul li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.5rem;
-}
-
-.aicb-related-container ul li a,
-.aicb-sources-container ul li a {
-    flex-grow: 1;
-}
-
-.aicb-link-action-btn {
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 4px 8px;
-    font-size: 14px;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-    line-height: 1;
-    opacity: 0.7;
-}
-
-.aicb-link-action-btn:hover {
-    background: rgba(255,255,255,0.2);
-    transform: scale(1.1);
-    opacity: 1;
-}
-
-
-/* --- Mobile Responsive --- */
-@media (max-width: 480px) {
-    #aicb-floating-widget {
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none; 
-    }
-    #aicb-floating-widget.active { pointer-events: auto; }
-    .aicb-float-window {
-        width: 100%;
-        height: 100%;
-        bottom: 0;
-        right: 0;
-        max-height: 100%;
-        border-radius: 0;
-        transform: translateY(100%);
-    }
-    #aicb-floating-widget.active .aicb-float-window { transform: translateY(0); }
-    #aicb-launcher { position: absolute; bottom: 20px; right: 20px; z-index: 1000; }
-    /* Hide the text bubble on mobile to save space */
-    .aicb-launcher-text-bubble {
-        display: none;
-    }
-}
 /* --- Link Action Button Styles --- */
 .aicb-related-container ul li,
 .aicb-sources-container ul li {
@@ -396,19 +334,179 @@ Version: 43.0 (Link Action Buttons)
     color: #fff;
     border-radius: 6px;
     cursor: pointer;
-    padding: 4px 10px; /* Adjusted padding */
-    font-size: 13px; /* Adjusted font size */
+    padding: 4px 10px;
+    font-size: 13px;
     flex-shrink: 0;
     transition: all 0.2s ease;
     line-height: 1;
-    opacity: 0.7;
-    display: inline-flex; /* Use flex for alignment */
+    display: inline-flex;
     align-items: center;
-    gap: 6px; /* Space between text and icon */
+    gap: 6px;
 }
 
 .aicb-link-action-btn:hover {
     background: rgba(255,255,255,0.2);
     transform: scale(1.05);
-    opacity: 1;
+}
+
+.aicb-welcome-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.aicb-welcome-buttons button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.aicb-welcome-buttons button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Modern "Back to Chat" Button --- */
+.aicb-float-content-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    margin-bottom: 15px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.aicb-float-content-back-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.aicb-float-content-back-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+.aicb-float-content-view {
+    padding-top: 50px; /* Make space for the back button */
+}
+
+/* --- Fullscreen Feature --- */
+.aicb-float-header {
+    background-color: #2e2f33;
+    padding: 8px 12px;
+    text-align: right;
+    border-bottom: 1px solid #374151;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+#aicb-fullscreen-button {
+    background: linear-gradient(45deg, #4f46e5, #7c3aed);
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+#aicb-fullscreen-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+#aicb-fullscreen-button svg {
+    width: 20px;
+    height: 20px;
+}
+
+#aicb-fullscreen-button .icon-compress {
+    display: none;
+}
+
+#aicb-floating-widget.aicb-fullscreen {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#aicb-floating-widget.aicb-fullscreen .aicb-float-window {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+    border-radius: 0;
+    bottom: 0;
+    right: 0;
+}
+
+#aicb-floating-widget.aicb-fullscreen #aicb-launcher {
+    display: none;
+}
+
+#aicb-floating-widget.aicb-fullscreen #aicb-fullscreen-button .icon-expand {
+    display: none;
+}
+
+#aicb-floating-widget.aicb-fullscreen #aicb-fullscreen-button .icon-compress {
+    display: block;
+}
+
+body.aicb-body-fullscreen-active {
+    overflow: hidden;
+}
+
+/* --- Mobile Responsive --- */
+@media (max-width: 480px) {
+    #aicb-floating-widget:not(.aicb-fullscreen) {
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none; 
+    }
+    #aicb-floating-widget.active:not(.aicb-fullscreen) { pointer-events: auto; }
+    
+    .aicb-float-window {
+        width: 100%;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+    }
+    
+    #aicb-floating-widget:not(.aicb-fullscreen) .aicb-float-window {
+        bottom: 0;
+        right: 0;
+        transform: translateY(100%);
+    }
+
+    #aicb-floating-widget.active:not(.aicb-fullscreen) .aicb-float-window { transform: translateY(0); }
+    
+    #aicb-launcher { position: absolute; bottom: 20px; right: 20px; z-index: 1000; }
+
+    .aicb-launcher-text-bubble {
+        display: none;
+    }
 }

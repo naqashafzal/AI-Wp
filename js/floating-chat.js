@@ -6,9 +6,30 @@ jQuery(document).ready(function($) {
     const form = widget.find('.aicb-float-form');
     const input = widget.find('textarea');
     const messagesArea = widget.find('.aicb-float-messages-area');
+    const fullscreenButton = $('#aicb-fullscreen-button');
     let conversationHistory = [];
     const MAX_HISTORY = 6;
     let autocompleteTimeout;
+
+    // --- Fullscreen Logic ---
+    if (aicb_settings.enable_floating_fullscreen && fullscreenButton.length) {
+        fullscreenButton.on('click', function() {
+            widget.toggleClass('aicb-fullscreen');
+            $('body').toggleClass('aicb-body-fullscreen-active');
+        });
+    }
+
+    // --- Launcher Click Logic ---
+    launcher.on('click', function() {
+        if (widget.hasClass('aicb-fullscreen')) {
+            widget.removeClass('aicb-fullscreen');
+            $('body').removeClass('aicb-body-fullscreen-active');
+        }
+        widget.toggleClass('active');
+        if (widget.hasClass('active')) {
+            setTimeout(function() { input.focus(); }, 300);
+        }
+    });
 
     // --- Function to get personalized welcome message ---
     function getPersonalizedWelcome() {
@@ -73,13 +94,7 @@ jQuery(document).ready(function($) {
     
     input.on('input', handleAutocomplete);
 
-    launcher.on('click', function() {
-        widget.toggleClass('active');
-        if (widget.hasClass('active')) {
-            setTimeout(function() { input.focus(); }, 300);
-        }
-    });
-
+    // --- Main Chat Form Submission ---
     form.on('submit', function(e) {
         e.preventDefault();
         input.data('suggestion', '');
@@ -225,7 +240,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // --- NEW: Content Loader Logic ---
+    // --- Content Loader Logic ---
     messagesArea.on('click', '.aicb-content-loader', function(e) {
         e.preventDefault();
         const postId = $(this).data('post-id');
@@ -236,7 +251,6 @@ jQuery(document).ready(function($) {
             return;
         }
 
-        // For the floating widget, we'll replace the content of the messages area.
         const originalContent = messagesArea.html();
         messagesArea.html('<div class="aicb-content-loader-spinner"></div>');
 
@@ -250,7 +264,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    let backButton = '<a href="#" class="aicb-float-content-back-button">← Back to Chat</a>';
+                    let backButton = '<a href="#" class="aicb-float-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>';
                     messagesArea.html('<div class="aicb-float-content-view">' + backButton + response.data.html + '</div>');
                     messagesArea.data('original-content', originalContent);
                 } else {
@@ -260,7 +274,7 @@ jQuery(document).ready(function($) {
         });
     });
 
-    // --- NEW: Back to Chat Button Logic ---
+    // --- Back to Chat Button Logic ---
     messagesArea.on('click', '.aicb-float-content-back-button', function(e) {
         e.preventDefault();
         if (messagesArea.data('original-content')) {
@@ -268,7 +282,7 @@ jQuery(document).ready(function($) {
         }
     });
 
-    // --- NEW: Content View Rating Logic ---
+    // --- Content View Rating Logic ---
     messagesArea.on('click', '.aicb-content-ratings .aicb-rating-thumb', function() {
         const thumb = $(this);
         const wrapper = thumb.closest('.aicb-content-ratings');
@@ -289,30 +303,62 @@ jQuery(document).ready(function($) {
         wrapper.html('<em>Thanks for your feedback!</em>');
     });
 
-// --- Download Button Click Handler ---
-messagesArea.on('click', '.aicb-link-action-btn', function(e) {
-    e.preventDefault();
-    const button = $(this);
-    const downloadUrl = button.data('download-url');
-    const isPremiumRequired = button.data('premium-required');
+    // --- Download Button Click Handler ---
+    messagesArea.on('click', '.aicb-link-action-btn', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const downloadUrl = button.data('download-url');
+        const isPremiumRequired = button.data('premium-required');
 
-    if (isPremiumRequired) {
-        // Call the new modal with settings from WordPress
-        aicb_show_modal(
-            aicb_settings.premium_modal_title,
-            aicb_settings.premium_modal_message,
-            aicb_settings.premium_modal_button_text,
-            aicb_settings.premium_modal_button_url
-        );
-    } else if (downloadUrl) {
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.setAttribute('download', ''); 
-        link.style.display = 'none';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-});
+        if (isPremiumRequired) {
+            aicb_show_modal(
+                aicb_settings.premium_modal_title,
+                aicb_settings.premium_modal_message,
+                aicb_settings.premium_modal_button_text,
+                aicb_settings.premium_modal_button_url
+            );
+        } else if (downloadUrl) {
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.setAttribute('download', ''); 
+            link.style.display = 'none';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    });
+
+    // --- Dynamic Content Loader Logic ---
+    messagesArea.on('click', '.aicb-dynamic-content-loader', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const contentType = button.data('content-type');
+
+        const thinkingIndicator = $(`<div class="aicb-float-message-wrapper aicb-float-ai-wrapper"><div class="aicb-float-message aicb-float-ai-message thinking-indicator"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>`);
+        messagesArea.append(thinkingIndicator);
+        messagesArea.scrollTop(messagesArea.prop("scrollHeight"));
+
+        $.ajax({
+            url: aicb_settings.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'aicb_get_dynamic_content',
+                nonce: aicb_settings.nonce,
+                content_type: contentType
+            },
+            success: function(response) {
+                if (response.success) {
+                    thinkingIndicator.find('.aicb-float-ai-message').removeClass('thinking-indicator').html(response.data.html);
+                } else {
+                    thinkingIndicator.find('.aicb-float-ai-message').removeClass('thinking-indicator').html('<p>Sorry, an error occurred.</p>');
+                }
+                messagesArea.scrollTop(messagesArea.prop("scrollHeight"));
+            },
+            error: function() {
+                thinkingIndicator.find('.aicb-float-ai-message').removeClass('thinking-indicator').html('<p>Error: Could not connect.</p>');
+                messagesArea.scrollTop(messagesArea.prop("scrollHeight"));
+            }
+        });
+    });
 
 });

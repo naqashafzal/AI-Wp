@@ -268,7 +268,7 @@ jQuery(document).ready(function($) {
             },
             success: function(response) {
                 if (response.success) {
-                    let backButton = '<a href="#" class="aicb-content-back-button">← Back to Chat</a>';
+                    let backButton = '<a href="#" class="aicb-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>';
                     targetView.html('<div class="aicb-full-content-view">' + backButton + response.data.html + '</div>');
                 } else {
                     targetView.html('<p>Error loading content.</p><a href="#" class="aicb-content-back-button">← Back to Chat</a>');
@@ -324,6 +324,44 @@ jQuery(document).ready(function($) {
             link.click();
             document.body.removeChild(link);
         }
+    });
+
+    // --- Dynamic Content Loader Logic ---
+    messagesContainer.on('click', '.aicb-dynamic-content-loader', function(e) {
+        e.preventDefault();
+        const button = $(this);
+        const contentType = button.data('content-type');
+
+        // Optional: Show a thinking indicator
+        const thinkingIndicatorHtml = `<div class="message-wrapper ai-message-wrapper" id="thinking-indicator-wrapper"><div class="ai-chat-message ai-message thinking-indicator"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div></div>`;
+        messagesContainer.append(thinkingIndicatorHtml);
+        scrollToBottom();
+
+        $.ajax({
+            url: aicb_settings.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'aicb_get_dynamic_content',
+                nonce: aicb_settings.nonce,
+                content_type: contentType
+            },
+            success: function(response) {
+                const thinkingWrapper = $('#thinking-indicator-wrapper');
+                if (response.success) {
+                    thinkingWrapper.find('.ai-chat-message').removeClass('thinking-indicator').html(response.data.html);
+                } else {
+                    thinkingWrapper.find('.ai-chat-message').removeClass('thinking-indicator').html('<p>Sorry, an error occurred.</p>');
+                }
+                thinkingWrapper.removeAttr('id');
+                scrollToBottom();
+            },
+            error: function() {
+                const thinkingWrapper = $('#thinking-indicator-wrapper');
+                thinkingWrapper.find('.ai-chat-message').removeClass('thinking-indicator').html('<p>Error: Could not connect to the server.</p>');
+                thinkingWrapper.removeAttr('id');
+                scrollToBottom();
+            }
+        });
     });
     
 });

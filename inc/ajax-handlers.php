@@ -484,10 +484,15 @@ function aicb_get_post_content_callback() {
         wp_send_json_error(['message' => 'Invalid Post ID.']);
     }
 
+    aicb_log_activity('link_click', get_the_title($post_id), $post_id);
+
     $post = get_post($post_id);
     if (!$post || $post->post_status !== 'publish') {
         wp_send_json_error(['message' => 'Content not found or not published.']);
     }
+
+    // Increment view count
+    aicb_increment_post_view_count($post_id);
 
     $content = apply_filters('the_content', $post->post_content);
 
@@ -556,6 +561,20 @@ function aicb_get_welcome_callback() {
     $category_list = !empty($categories) ? implode(', ', $categories) : 'various';
 
     $personalized_message = str_replace('{categories}', $category_list, $welcome_template);
+
+    $buttons_html = '<div class="aicb-welcome-buttons">';
+    if (!empty($options['aicb_show_new_content_button'])) {
+        $buttons_html .= '<button class="aicb-dynamic-content-loader" data-content-type="new">New Content</button>';
+    }
+    if (!empty($options['aicb_show_top_content_button'])) {
+        $buttons_html .= '<button class="aicb-dynamic-content-loader" data-content-type="top">Top Content</button>';
+    }
+    if (!empty($options['aicb_show_most_viewed_content_button'])) {
+        $buttons_html .= '<button class="aicb-dynamic-content-loader" data-content-type="most_viewed">Most Viewed</button>';
+    }
+    $buttons_html .= '</div>';
+
+    $personalized_message .= $buttons_html;
 
     $related_html = '';
     if (!empty($options['aicb_show_related_content']) && !empty($categories)) {
@@ -930,4 +949,132 @@ function aicb_get_autocomplete_suggestions_callback() {
     } else {
         wp_send_json_error(['suggestion' => '']);
     }
+}
+
+function aicb_increment_post_view_count($post_id) {
+    if (!$post_id) return;
+    $count = get_post_meta($post_id, '_aicb_view_count', true);
+    $count = empty($count) ? 1 : absint($count) + 1;
+    update_post_meta($post_id, '_aicb_view_count', $count);
+}
+
+add_action('wp_ajax_aicb_get_dynamic_content', 'aicb_get_dynamic_content_callback');
+add_action('wp_ajax_nopriv_aicb_get_dynamic_content', 'aicb_get_dynamic_content_callback');
+function aicb_get_dynamic_content_callback() {
+    check_ajax_referer('aicb_chat_nonce', 'nonce');
+    $content_type = isset($_POST['content_type']) ? sanitize_key($_POST['content_type']) : '';
+
+    $args = [
+        'post_type' => ['post', 'page'],
+        'posts_per_page' => 5,
+        'post_status' => 'publish',
+    ];
+
+    $title = '';
+
+    switch ($content_type) {
+        case 'new':
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+            $title = 'Here is the latest content:';
+            break;
+        case 'top':
+            $args['meta_key'] = '_aicb_rating_up';
+            $args['orderby'] = 'meta_value_num';
+            $args['order'] = 'DESC';
+            $title = 'Here is the top-rated content:';
+            break;
+        case 'most_viewed':
+            $args['meta_key'] = '_aicb_view_count';
+            $args['orderby'] = 'meta_value_num';
+            $args['order'] = 'DESC';
+            $title = 'Here is the most viewed content:';
+            break;
+        default:
+            wp_send_json_error(['message' => 'Invalid content type.']);
+            return;
+    }
+
+    $query = new WP_Query($args);
+    $response_html = '';
+
+    if ($query->have_posts()) {
+        $response_html .= '<p>' . esc_html($title) . '</p><ul>';
+        while ($query->have_posts()) {
+            $query->the_post();
+            $response_html .= '<li><a href="#" class="aicb-content-loader" data-post-id="' . get_the_ID() . '" data-permalink="' . get_permalink() . '">' . get_the_title() . '</a></li>';
+        }
+        $response_html .= '</ul>';
+        wp_reset_postdata();
+    } else {
+        $response_html = '<p>No content found.</p>';
+    }
+
+    wp_send_json_success(['html' => $response_html]);
+}
+
+add_action('wp_ajax_aicb_get_chart_data', 'aicb_get_chart_data_callback');
+function aicb_get_chart_data_callback() {
+    check_ajax_referer('aicb_admin_nonce', 'nonce');
+    global $wpdb;
+    $activity_table = $wpdb->prefix . 'aicb_activity_log';
+
+    $searches_by_day = $wpdb->get_results("SELECT DATE(time) as date, COUNT(*) as count FROM {$activity_table} WHERE event_type = 'search' AND time >= DATE_SUB(NOW(), INTERVAL 30 DAY) GROUP BY DATE(time) ORDER BY date ASC");
+    $searches_by_device = $wpdb->get_results("SELECT device, COUNT(*) as count FROM {$activity_table} WHERE event_type = 'search' GROUP BY device");
+    $searches_by_country = $wpdb->get_results("SELECT country, COUNT(*) as count FROM {$activity_table} WHERE event_type = 'search' AND country != '' GROUP BY country ORDER BY count DESC LIMIT 5");
+    $top_keywords = $wpdb->get_results("SELECT content, COUNT(*) as count FROM {$activity_table} WHERE event_type = 'search' GROUP BY content ORDER BY count DESC LIMIT 10");
+    $top_link_clicks = $wpdb->get_results("SELECT content, COUNT(*) as count FROM {$activity_table} WHERE event_type = 'link_click' GROUP BY content ORDER BY count DESC LIMIT 10");
+    
+    $up_votes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$activity_table} WHERE (event_type = 'rating' AND content LIKE 'Rating: up%') OR (event_type = 'content_rating' AND content LIKE 'Rating: up%')");
+    $down_votes = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$activity_table} WHERE (event_type = 'rating' AND content LIKE 'Rating: down%') OR (event_type = 'content_rating' AND content LIKE 'Rating: down%')");
+
+    wp_send_json_success([
+        'searches_by_day' => $searches_by_day,
+        'searches_by_device' => $searches_by_device,
+        'searches_by_country' => $searches_by_country,
+        'top_keywords' => $top_keywords,
+        'top_link_clicks' => $top_link_clicks,
+        'feedback' => ['up' => $up_votes, 'down' => $down_votes],
+    ]);
+}
+
+add_action('wp_ajax_aicb_delete_training_entry', 'aicb_delete_training_entry_callback');
+function aicb_delete_training_entry_callback() {
+    check_ajax_referer('aicb_admin_nonce', 'nonce');
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(['message' => 'Permission denied.']);
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aicb_training_data';
+    $id = isset($_POST['id']) ? absint($_POST['id']) : 0;
+
+    if ($id > 0) {
+        $wpdb->delete($table_name, ['id' => $id], ['%d']);
+        wp_send_json_success();
+    } else {
+        wp_send_json_error();
+    }
+}
+
+add_action('wp_ajax_aicb_export_training_data', 'aicb_export_training_data_callback');
+function aicb_export_training_data_callback() {
+    check_ajax_referer('aicb_admin_nonce', 'nonce');
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error(['message' => 'Permission denied.']);
+    }
+
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'aicb_training_data';
+    $data = $wpdb->get_results("SELECT question, answer FROM $table_name", ARRAY_A);
+    
+    $jsonl_data = '';
+    foreach ($data as $row) {
+        $jsonl_data .= json_encode(['text' => 'Question: ' . $row['question'] . '\nAnswer: ' . $row['answer']]) . "\n";
+    }
+
+    header('Content-Type: application/jsonl');
+    header('Content-Disposition: attachment; filename="aicb-training-data.jsonl"');
+    echo $jsonl_data;
+    exit;
 }

@@ -64,7 +64,7 @@ function aicb_render_login_form() {
     ob_start();
     ?>
     <div class="aicb-form-container">
-        <a href="#" class="aicb-content-back-button">← Back to Chat</a>
+        <a href="#" class="aicb-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>
         <h3>Login</h3>
         <form id="aicb-login-form">
             <p class="form-row">
@@ -92,7 +92,7 @@ function aicb_render_register_form() {
     ob_start();
     ?>
     <div class="aicb-form-container">
-        <a href="#" class="aicb-content-back-button">← Back to Chat</a>
+        <a href="#" class="aicb-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>
         <h3>Register</h3>
         <form id="aicb-register-form">
             <p class="form-row">
@@ -128,7 +128,7 @@ function aicb_render_account_page() {
     ob_start();
     ?>
     <div class="aicb-account-container">
-        <a href="#" class="aicb-content-back-button">← Back to Chat</a>
+        <a href="#" class="aicb-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>
         <h3>My Account</h3>
         <div class="aicb-account-details">
             <p><strong>Username:</strong> <?php echo esc_html($current_user->user_login); ?></p>
@@ -151,7 +151,7 @@ function aicb_render_subscriptions_page() {
     ob_start();
     ?>
     <div class="aicb-subscriptions-container">
-        <a href="#" class="aicb-content-back-button">← Back to Chat</a>
+        <a href="#" class="aicb-content-back-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd" /></svg>Back to Chat</a>
         <h3>Subscription Plans</h3>
         <div class="aicb-packages-grid">
             <?php if (!empty($packages)): ?>

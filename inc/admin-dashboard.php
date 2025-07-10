@@ -256,6 +256,9 @@ function aicb_render_analytics_page() {
                     <div class="postbox-container" style="width: 100%; margin-bottom: 20px;"><div class="postbox"><h2 class="hndle"><span>Searches per Day (Last 30 Days)</span></h2><div class="inside"><div style="height: 250px;"><canvas id="aicb-searches-by-day-chart"></canvas></div></div></div></div>
                     <div class="postbox-container" style="width: 49%; float: left; margin-right: 2%;"><div class="postbox"><h2 class="hndle"><span>Searches by Device</span></h2><div class="inside"><div style="height: 250px;"><canvas id="aicb-searches-by-device-chart"></canvas></div></div></div></div>
                     <div class="postbox-container" style="width: 49%; float: left;"><div class="postbox"><h2 class="hndle"><span>Top 5 Countries</span></h2><div class="inside"><div style="height: 250px;"><canvas id="aicb-searches-by-country-chart"></canvas></div></div></div></div>
+                    <div class="postbox-container" style="width: 100%; clear: both; margin-top: 20px;"><div class="postbox"><h2 class="hndle"><span>Top Searched Keywords</span></h2><div class="inside" id="aicb-top-keywords-report"></div></div></div>
+                    <div class="postbox-container" style="width: 49%; float: left; margin-right: 2%;"><div class="postbox"><h2 class="hndle"><span>Feedback Report</span></h2><div class="inside"><div style="height: 250px;"><canvas id="aicb-feedback-chart"></canvas></div></div></div></div>
+                    <div class="postbox-container" style="width: 49%; float: left;"><div class="postbox"><h2 class="hndle"><span>Top Clicked Links</span></h2><div class="inside" id="aicb-link-click-report"></div></div></div>
                 </div>
             </div>
         <?php endif; ?>

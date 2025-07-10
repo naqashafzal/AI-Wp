@@ -11,13 +11,21 @@ function aicb_add_floating_chatbox_html() {
     $is_floating_enabled = isset($options['aicb_enable_floating_chatbox']) && $options['aicb_enable_floating_chatbox'];
     $is_takeover_active = isset($options['aicb_front_page_takeover']) && $options['aicb_front_page_takeover'];
 
-    // --- FIX: Render if floating widget is enabled AND (it's not the front page OR front page takeover is disabled) ---
     if ($is_floating_enabled && (!is_front_page() || !$is_takeover_active)) {
         $notification_badge = isset($options['aicb_launcher_notification']) ? trim($options['aicb_launcher_notification']) : '';
         $cta_text = isset($options['aicb_launcher_cta_text']) ? trim($options['aicb_launcher_cta_text']) : '';
+        $is_fullscreen_enabled = isset($options['aicb_enable_floating_fullscreen']) && $options['aicb_enable_floating_fullscreen'];
         ?>
         <div id="aicb-floating-widget">
             <div class="aicb-float-window">
+                <div class="aicb-float-header">
+                    <?php if ($is_fullscreen_enabled) : ?>
+                        <button id="aicb-fullscreen-button" title="Toggle Fullscreen">
+                            <svg class="icon-expand" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 3a1 1 0 00-1 1v2.25a.75.75 0 001.5 0V5h1.25a.75.75 0 000-1.5H4a1 1 0 00-1 1zM16 3a1 1 0 011 1v1.25a.75.75 0 01-1.5 0V5h-1.25a.75.75 0 010-1.5H16zM3 17a1 1 0 011-1h1.25a.75.75 0 010 1.5H5v1.25a.75.75 0 01-1.5 0V17zM17 16a1 1 0 00-1 1v1.25a.75.75 0 001.5 0V17h-1.25a.75.75 0 000-1.5H17z"/></svg>
+                            <svg class="icon-compress" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.25 3.75a.75.75 0 00-1.5 0V5H3.5a.75.75 0 000 1.5H5v1.25a.75.75 0 001.5 0V5h.25a.75.75 0 000-1.5H6.25V3.75zM13.75 3.75a.75.75 0 00-1.5 0V5h-1.25a.75.75 0 000 1.5H12.5v1.25a.75.75 0 001.5 0V5h.25a.75.75 0 000-1.5H13.75V3.75zM3.5 13.75a.75.75 0 000 1.5H5v.25a.75.75 0 001.5 0v-1.25H5a.75.75 0 00-1.5 0zM12.5 13.75a.75.75 0 000 1.5h1.25v.25a.75.75 0 001.5 0v-1.25H13.75a.75.75 0 00-1.25 0z"/></svg>
+                        </button>
+                    <?php endif; ?>
+                </div>
                 <div class="aicb-float-messages-area">
                     <div class="aicb-float-message-wrapper aicb-float-ai-wrapper" id="aicb-float-welcome-message">
                         <div class="aicb-float-message aicb-float-ai-message"><p>Hello! How can I help?</p></div>

@@ -2,7 +2,7 @@
  * AI Chatbox Main Stylesheet
  *
  * @package AI-Wp
- * @version 3.4 (Link Action Buttons)
+ * @version 3.7 (Modern Back Button)
  */
 
 /* --- Google Font Import --- */
@@ -25,7 +25,7 @@
 
 /* --- Base Page & Layout --- */
 .aicb-body { 
-    overflow: hidden; 
+    overflow-x: hidden; /* Prevent horizontal scroll */
     background: linear-gradient(135deg, #101028, #1a1a2e);
     margin: 0;
     height: 100vh;
@@ -73,16 +73,19 @@
     display: flex; 
     flex-direction: column; 
     min-height: 0; 
+    width: 100%; /* Ensure it takes full width */
 }
 .ai-chat-window { 
     flex-grow: 1; 
     overflow-y: auto; 
     padding: 2rem 3rem;
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 .aicb-view-container {
     display: flex;
     flex-direction: column;
     min-height: 100%;
+    position: relative; /* For back button positioning */
 }
 .ai-chat-messages-view {
     display: flex;
@@ -172,6 +175,7 @@
     margin-left: auto; 
     margin-right: auto; 
     width: 100%; 
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 .ai-chat-form { 
     background-color: rgba(40, 42, 68, 0.7);
@@ -436,38 +440,6 @@
     background: #10B981;
 }
 
-/* --- NEW: Link Action Button Styles --- */
-.aicb-related-container ul li,
-.aicb-sources-container ul li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 0.5rem;
-}
-
-.aicb-related-container ul li a,
-.aicb-sources-container ul li a {
-    flex-grow: 1;
-}
-
-.aicb-link-action-btn {
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.15);
-    color: #fff;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 4px 8px;
-    font-size: 14px;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-    line-height: 1;
-}
-
-.aicb-link-action-btn:hover {
-    background: rgba(255,255,255,0.15);
-    transform: scale(1.1);
-}
 /* --- Link Action Button Styles --- */
 .aicb-related-container ul li,
 .aicb-sources-container ul li {
@@ -496,10 +468,83 @@
     line-height: 1;
     display: inline-flex; /* Use flex for alignment */
     align-items: center;
-    gap: 6px; /* Space between text and icon */
+    gap: 6px; /* Space between icon and text */
 }
 
 .aicb-link-action-btn:hover {
     background: rgba(255,255,255,0.15);
     transform: scale(1.05);
+}
+
+.aicb-welcome-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.aicb-welcome-buttons button {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.aicb-welcome-buttons button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* --- Modern "Back to Chat" Button --- */
+.aicb-content-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background-color 0.2s;
+    margin-bottom: 15px;
+}
+
+.aicb-content-back-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.aicb-content-back-button svg {
+    width: 16px;
+    height: 16px;
+}
+
+
+/* --- Responsive Styles --- */
+@media (max-width: 768px) {
+    .ai-chat-sidebar {
+        display: none; /* Hide sidebar on smaller screens */
+    }
+
+    .ai-chat-window {
+        /* Reduce horizontal padding on smaller screens */
+        padding: 1.5rem 1rem;
+    }
+    
+    .ai-chat-input-container {
+        /* Reduce horizontal padding on smaller screens */
+        padding: 1rem;
+    }
+
+    .message-wrapper {
+        max-width: 95%; /* Allow messages to take up more width */
+    }
+    
+    .action-buttons {
+        justify-content: center; /* Center action buttons on mobile */
+    }
 }

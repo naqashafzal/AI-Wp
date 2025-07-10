@@ -1,6 +1,6 @@
 /*
 --- AI Chatbox Admin Styles ---
-Version: 60.4 (Modern Light Theme & Notice Fix)
+Version: 60.5 (Responsive)
 */
 
 /* --- Main Settings Page Wrapper --- */
@@ -231,4 +231,21 @@ input:checked + .aicb-slider:before {
 .aicb-settings-content .button-primary:hover {
     background: #1d4ed8;
     border-color: #1d4ed8;
+}
+
+/* --- Responsive Admin Styles --- */
+@media (max-width: 960px) {
+    .aicb-settings-inner-wrap {
+        flex-direction: column;
+    }
+
+    .aicb-settings-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+    }
+
+    .aicb-settings-content {
+        padding-right: 0;
+    }
 }

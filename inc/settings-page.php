@@ -167,6 +167,7 @@ function aicb_register_settings() {
     // --- Feature Control ---
     add_settings_section('aicb_features_settings', null, null, 'aicb_features_settings');
     add_settings_field('aicb_enable_floating_chatbox', 'Enable Floating Chatbox', 'aicb_enable_floating_chatbox_callback', 'aicb_features_settings', 'aicb_features_settings');
+    add_settings_field('aicb_enable_floating_fullscreen', 'Enable Fullscreen for Floating Widget', 'aicb_enable_floating_fullscreen_callback', 'aicb_features_settings', 'aicb_features_settings');
     add_settings_field('aicb_launcher_notification', 'Launcher Notification Badge', 'aicb_launcher_notification_callback', 'aicb_features_settings', 'aicb_features_settings');
     add_settings_field('aicb_launcher_cta_text', 'Launcher Call to Action', 'aicb_launcher_cta_text_callback', 'aicb_features_settings', 'aicb_features_settings');
     add_settings_field('aicb_front_page_takeover', 'Enable Chat Mode on Front Page', 'aicb_front_page_takeover_callback', 'aicb_features_settings', 'aicb_features_settings');
@@ -217,6 +218,9 @@ function aicb_register_settings() {
     add_settings_field('aicb_enable_personalized_welcome', 'Enable Personalized Welcome', 'aicb_enable_personalized_welcome_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
     add_settings_field('aicb_show_related_content', 'Show Related Content in Welcome', 'aicb_show_related_content_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
     add_settings_field('aicb_welcome_prompt', 'Custom Welcome Template', 'aicb_welcome_prompt_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
+    add_settings_field('aicb_show_new_content_button', 'Show "New Content" Button', 'aicb_show_new_content_button_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
+    add_settings_field('aicb_show_top_content_button', 'Show "Top Content" Button', 'aicb_show_top_content_button_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
+    add_settings_field('aicb_show_most_viewed_content_button', 'Show "Most Viewed" Button', 'aicb_show_most_viewed_content_button_callback', 'aicb_personalization_settings', 'aicb_personalization_settings');
     
     // --- Lead Generation ---
     add_settings_section('aicb_lead_generation_settings', null, null, 'aicb_lead_generation_settings');
@@ -252,11 +256,11 @@ function aicb_sanitize_settings( $input ) {
     // A map of which settings belong to which tab
     $tab_fields = [
         'api' => ['aicb_enable_gemini', 'aicb_gemini_api_key', 'aicb_tuned_model_name'],
-        'features' => ['aicb_enable_floating_chatbox', 'aicb_launcher_notification', 'aicb_launcher_cta_text', 'aicb_front_page_takeover', 'aicb_enable_knowledge_base', 'aicb_enable_autocomplete'],
+        'features' => ['aicb_enable_floating_chatbox', 'aicb_enable_floating_fullscreen', 'aicb_launcher_notification', 'aicb_launcher_cta_text', 'aicb_front_page_takeover', 'aicb_enable_knowledge_base', 'aicb_enable_autocomplete'],
         'display' => ['aicb_content_display_mode', 'aicb_show_sources', 'aicb_enable_post_ratings', 'aicb_main_download_button_text', 'aicb_main_download_button_icon', 'aicb_chat_download_button_text', 'aicb_chat_download_button_icon', 'aicb_show_ad', 'aicb_custom_ad_code', 'aicb_enable_floating_ad', 'aicb_floating_ad_position', 'aicb_floating_ad_custom_code', 'aicb_exclude_floating_ad_pages', 'aicb_premium_modal_title', 'aicb_premium_modal_message', 'aicb_premium_modal_button_text', 'aicb_premium_modal_button_url'],
         'persona' => ['aicb_website_specialty', 'aicb_target_audience', 'aicb_communication_style', 'aicb_system_prompt', 'aicb_enable_memory'],
         'branding' => ['aicb_sidebar_logo_url'],
-        'personalization' => ['aicb_enable_personalized_welcome', 'aicb_show_related_content', 'aicb_welcome_prompt'],
+        'personalization' => ['aicb_enable_personalized_welcome', 'aicb_show_related_content', 'aicb_welcome_prompt', 'aicb_show_new_content_button', 'aicb_show_top_content_button', 'aicb_show_most_viewed_content_button'],
         'lead_generation' => ['aicb_enable_lead_analysis'],
         'membership' => ['aicb_enable_membership', 'aicb_package_features_list', 'aicb_payment_url'],
         'integrations' => ['aicb_paypal_email', 'aicb_stripe_secret_key', 'aicb_mailchimp_api_key'],
@@ -266,10 +270,10 @@ function aicb_sanitize_settings( $input ) {
     // Handle checkboxes for the active tab
     $checkboxes_for_tab = [
         'api' => ['aicb_enable_gemini'],
-        'features' => ['aicb_enable_floating_chatbox', 'aicb_front_page_takeover', 'aicb_enable_knowledge_base', 'aicb_enable_autocomplete'],
+        'features' => ['aicb_enable_floating_chatbox', 'aicb_enable_floating_fullscreen', 'aicb_front_page_takeover', 'aicb_enable_knowledge_base', 'aicb_enable_autocomplete'],
         'display' => ['aicb_show_sources', 'aicb_enable_post_ratings', 'aicb_show_ad', 'aicb_enable_floating_ad'],
         'persona' => ['aicb_enable_memory'],
-        'personalization' => ['aicb_enable_personalized_welcome', 'aicb_show_related_content'],
+        'personalization' => ['aicb_enable_personalized_welcome', 'aicb_show_related_content', 'aicb_show_new_content_button', 'aicb_show_top_content_button', 'aicb_show_most_viewed_content_button'],
         'lead_generation' => ['aicb_enable_lead_analysis'],
         'membership' => ['aicb_enable_membership'],
     ];
@@ -424,10 +428,14 @@ function aicb_welcome_prompt_callback() {
     echo '<textarea name="aicb_settings[aicb_welcome_prompt]" rows="4" class="large-text">' . esc_textarea($value) . '</textarea>';
     echo '<p class="description">Customize the welcome message. Use <code>{categories}</code> to insert the post categories the visitor has been viewing.</p>';
 }
+function aicb_show_new_content_button_callback() { aicb_render_toggle_switch(['name' => 'aicb_show_new_content_button', 'description' => 'Show a "New Content" button in the welcome message.']); }
+function aicb_show_top_content_button_callback() { aicb_render_toggle_switch(['name' => 'aicb_show_top_content_button', 'description' => 'Show a "Top Content" button based on post ratings.']); }
+function aicb_show_most_viewed_content_button_callback() { aicb_render_toggle_switch(['name' => 'aicb_show_most_viewed_content_button', 'description' => 'Show a "Most Viewed" button based on post views.']); }
 
 function aicb_enable_lead_analysis_callback() { aicb_render_toggle_switch(['name' => 'aicb_enable_lead_analysis', 'description' => 'Automatically analyze user queries for sentiment and buying intent.']); }
 
 function aicb_enable_floating_chatbox_callback() { aicb_render_toggle_switch(['name' => 'aicb_enable_floating_chatbox', 'description' => 'Adds a chat bubble to the bottom corner of all pages.']); }
+function aicb_enable_floating_fullscreen_callback() { aicb_render_toggle_switch(['name' => 'aicb_enable_floating_fullscreen', 'description' => 'Adds a button to the floating widget to expand it to a full-screen view.']); }
 function aicb_launcher_notification_callback() {
     $options = get_option('aicb_settings');
     $value = isset($options['aicb_launcher_notification']) ? $options['aicb_launcher_notification'] : '1';

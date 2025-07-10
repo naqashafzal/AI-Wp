@@ -22,13 +22,16 @@ function aicb_admin_enqueue_scripts( $hook ) {
         // Enqueue admin styles
         wp_enqueue_style( 'aicb-admin-style', plugin_dir_url( AICB_PLUGIN_FILE ) . 'css/admin-style.css' );
         
+        $dashboard_deps = ['jquery'];
+
         // Enqueue Chart.js only on the main analytics page
         if ($hook === 'toplevel_page_aicb-analytics') {
             wp_enqueue_script( 'chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), null, true );
+            $dashboard_deps[] = 'chart-js';
         }
 
         // Enqueue the main admin dashboard script
-        wp_enqueue_script( 'aicb-admin-dashboard-js', plugin_dir_url( AICB_PLUGIN_FILE ) . 'js/admin-dashboard.js', array( 'jquery' ), '1.9', true );
+        wp_enqueue_script( 'aicb-admin-dashboard-js', plugin_dir_url( AICB_PLUGIN_FILE ) . 'js/admin-dashboard.js', $dashboard_deps, '1.9', true );
         
         // Localize script with necessary data
         wp_localize_script('aicb-admin-dashboard-js', 'aicb_dashboard_obj', array( 
@@ -59,6 +62,7 @@ function aicb_enqueue_frontend_assets() {
         'autocomplete_enabled' => isset($options['aicb_enable_autocomplete']) ? (bool)$options['aicb_enable_autocomplete'] : true,
         'enable_memory' => isset($options['aicb_enable_memory']) ? (bool)$options['aicb_enable_memory'] : true,
         'content_display_mode' => isset($options['aicb_content_display_mode']) ? $options['aicb_content_display_mode'] : 'in_chatbox',
+        'enable_floating_fullscreen' => isset($options['aicb_enable_floating_fullscreen']) ? (bool)$options['aicb_enable_floating_fullscreen'] : false,
         'post_id' => $post_id,
         'post_categories' => $post_categories,
         'premium_modal_title' => isset($options['aicb_premium_modal_title']) ? $options['aicb_premium_modal_title'] : 'Premium Feature',
