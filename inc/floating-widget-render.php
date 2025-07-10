@@ -8,7 +8,11 @@ add_action('wp_footer', 'aicb_add_floating_chatbox_html');
 function aicb_add_floating_chatbox_html() {
     $options = get_option('aicb_settings');
     
-    if (isset($options['aicb_enable_floating_chatbox']) && $options['aicb_enable_floating_chatbox'] && !is_front_page()) {
+    $is_floating_enabled = isset($options['aicb_enable_floating_chatbox']) && $options['aicb_enable_floating_chatbox'];
+    $is_takeover_active = isset($options['aicb_front_page_takeover']) && $options['aicb_front_page_takeover'];
+
+    // --- FIX: Render if floating widget is enabled AND (it's not the front page OR front page takeover is disabled) ---
+    if ($is_floating_enabled && (!is_front_page() || !$is_takeover_active)) {
         $notification_badge = isset($options['aicb_launcher_notification']) ? trim($options['aicb_launcher_notification']) : '';
         $cta_text = isset($options['aicb_launcher_cta_text']) ? trim($options['aicb_launcher_cta_text']) : '';
         ?>
@@ -40,7 +44,6 @@ function aicb_add_floating_chatbox_html() {
                     <span class="aicb-launcher-badge"><?php echo esc_html( $notification_badge ); ?></span>
                 <?php endif; ?>
                 
-                <?php // --- New: Gemini Star Icon SVG --- ?>
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12 10.875L13.125 12L12 13.125L10.875 12L12 10.875Z" fill="white"/>
                     <path d="M12 4.25L14.0083 8.26667L18.025 10.275L14.0083 12.2833L12 16.3L9.99167 12.2833L5.975 10.275L9.99167 8.26667L12 4.25Z" fill="white"/>

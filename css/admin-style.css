@@ -1,15 +1,16 @@
 /*
 --- AI Chatbox Admin Styles ---
-Version: 40.0 (Final & Stable)
+Version: 60.4 (Modern Light Theme & Notice Fix)
 */
 
 /* --- Main Settings Page Wrapper --- */
-/* This creates the two-column layout using Flexbox */
 .aicb-settings-wrap {
+    margin-top: 20px;
+}
+
+.aicb-settings-inner-wrap {
     display: flex;
     gap: 20px;
-    margin-top: 20px;
-    margin-left: -20px; /* Counteract default WordPress admin padding */
 }
 
 /* --- Sidebar Navigation --- */
@@ -18,7 +19,7 @@ Version: 40.0 (Final & Stable)
     flex-shrink: 0;
     background: #f0f0f1;
     border-right: 1px solid #dcdcde;
-    height: calc(100vh - 32px); /* Full height minus admin bar */
+    height: calc(100vh - 52px); /* Full height minus admin bar & top margin */
     position: sticky;
     top: 32px; /* Stick to the bottom of the admin bar */
     display: flex;
@@ -72,6 +73,15 @@ Version: 40.0 (Final & Stable)
     font-weight: 600;
 }
 
+.aicb-menu-separator {
+    margin: 10px 20px;
+}
+.aicb-menu-separator hr {
+    border: none;
+    border-top: 1px solid #dcdcde;
+}
+
+
 /* --- Settings Page Footer --- */
 .aicb-settings-footer {
     padding: 15px 20px;
@@ -94,37 +104,45 @@ Version: 40.0 (Final & Stable)
 /* --- Main Content Area --- */
 .aicb-settings-content {
     flex-grow: 1;
-    max-width: 900px;
-    padding-right: 20px;
+    max-width: 1024px;
+    padding: 0 20px 40px 0;
 }
 
+/* Card layout */
 .aicb-settings-card {
     background: #fff;
     border: 1px solid #dcdcde;
-    border-radius: 4px;
-    margin-bottom: 20px;
-    padding: 1px 20px 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 1px rgba(0,0,0,.04);
 }
 
-.aicb-settings-card h2 {
+.aicb-card-header {
     font-size: 1.2em;
-    margin: 1.2em 0;
-    padding-bottom: 1em;
+    padding: 15px 20px;
+    margin: 0;
     border-bottom: 1px solid #dcdcde;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.aicb-card-content {
+    padding: 1px 20px 20px;
 }
 
 /* --- Form Styles --- */
 .aicb-settings-content .form-table {
-    margin-top: 0;
+    margin-top: 20px;
+}
+.aicb-settings-content .form-table th,
+.aicb-settings-content .form-table td {
+    padding: 20px 10px;
 }
 
 .aicb-settings-content .form-table th {
-    padding: 15px 10px 15px 0;
-    width: 220px;
-}
-
-.aicb-settings-content .form-table td {
-    padding: 10px;
+    width: 250px;
+    font-weight: 600;
 }
 
 .aicb-settings-content .form-table p.description {
@@ -132,42 +150,85 @@ Version: 40.0 (Final & Stable)
     color: #646970;
 }
 
-/* Custom Checkbox Styling */
-.aicb-settings-content input[type="checkbox"] {
-    width: 1.2em;
-    height: 1.2em;
-    margin-right: 8px;
+.aicb-settings-content input[type="text"],
+.aicb-settings-content input[type="url"],
+.aicb-settings-content input[type="email"],
+.aicb-settings-content input[type="number"],
+.aicb-settings-content select,
+.aicb-settings-content textarea {
+    border-radius: 4px;
+    border-color: #8c8f94;
+}
+.aicb-settings-content textarea.large-text {
+    width: 100%;
+    max-width: 600px;
+}
+
+/* --- Custom Toggle Switch --- */
+.aicb-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
     vertical-align: middle;
 }
 
-.aicb-settings-content label {
-    display: inline-flex;
-    align-items: center;
+.aicb-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
-/* --- Live Indicator on Analytics Page --- */
-.aicb-live-indicator {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    background-color: #d63638; /* WordPress Red */
+.aicb-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 28px;
+}
+
+.aicb-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
     border-radius: 50%;
-    margin-left: 8px;
-    animation: aicb-pulse 1.5s infinite;
-    box-shadow: 0 0 5px #d63638;
 }
 
-@keyframes aicb-pulse {
-    0% {
-        transform: scale(0.9);
-        opacity: 1;
-    }
-    50% {
-        transform: scale(1.2);
-        opacity: 0.7;
-    }
-    100% {
-        transform: scale(0.9);
-        opacity: 1;
-    }
+input:checked + .aicb-slider {
+    background-color: #2563eb;
+}
+
+input:focus + .aicb-slider {
+    box-shadow: 0 0 1px #2563eb;
+}
+
+input:checked + .aicb-slider:before {
+    transform: translateX(22px);
+}
+
+/* --- Save Button --- */
+.aicb-settings-content .button-primary {
+    background: #2563eb;
+    border-color: #2563eb;
+    transition: background-color 0.2s ease-in-out;
+    padding: 5px 20px;
+    height: auto;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 4px;
+}
+.aicb-settings-content .button-primary:hover {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
 }

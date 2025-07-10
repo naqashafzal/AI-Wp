@@ -1,0 +1,42 @@
+/*
+--- AI Chatbox Download Button Styles ---
+*/
+.aicb-download-button-wrapper {
+    margin: 40px 0 20px;
+    padding: 30px;
+    text-align: center;
+    background-color: #f7fafc;
+    border: 1px dashed #e2e8f0;
+    border-radius: 12px;
+}
+
+.aicb-download-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background-color: #2563eb;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+}
+
+.aicb-download-button:hover {
+    background-color: #1d4ed8;
+    color: #fff;
+    transform: translateY(-2px);
+}
+
+.aicb-download-button .dashicons {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 1;
+}

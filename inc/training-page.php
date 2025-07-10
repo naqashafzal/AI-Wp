@@ -1,29 +1,26 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) exit;
-
 /**
- * Adds the "Training Data" submenu page to the main "AI Chatbox" admin menu.
+ * Admin Training Data Page
+ *
+ * This file renders the page where administrators can view and export
+ * the AI conversation data for model training purposes.
+ *
+ * @package AI-Wp
  */
-add_action( 'admin_menu', 'aicb_add_training_page' );
-function aicb_add_training_page() {
-    add_submenu_page(
-        'aicb-analytics',          // The parent menu slug
-        'Training Data',           // The title that appears on the page
-        'Training Data',           // The text for the menu item
-        'manage_options',          // The capability required to see this page
-        'aicb-training',           // The unique slug for this menu page
-        'aicb_render_training_page'// The function that renders the page's HTML
-    );
-}
+
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly.
 
 /**
  * Renders the HTML for the Training Data page.
+ *
+ * The menu item for this page is registered in inc/admin-dashboard.php,
+ * and this function is called as the callback to display the page content.
  */
 function aicb_render_training_page() {
     global $wpdb;
     $table_name = $wpdb->prefix . 'aicb_training_data';
     
-    // Check if the table exists to prevent errors
+    // Check if the table exists to prevent errors if activation hook failed.
     $table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) == $table_name;
     $training_data = [];
     if ($table_exists) {

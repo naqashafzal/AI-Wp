@@ -1,0 +1,113 @@
+/**
+ * Floating Ad Bar Styles
+ *
+ * @package AI-Wp
+ * @version 2.2 (Forceful Sizing Fix)
+ */
+
+ #aicb-floating-ad-bar {
+    /* Positioning & Sizing */
+    position: fixed !important;
+    width: auto !important; /* Let content define width */
+    max-width: 90vw !important; /* Prevent it from being too wide on small screens */
+    display: inline-flex !important; /* Shrink-to-fit container */
+    
+    /* Visibility & Animation */
+    visibility: hidden !important;
+    opacity: 0 !important;
+    transition: opacity 0.5s ease, transform 0.5s ease, visibility 0.5s !important;
+    
+    /* Reset inherited styles */
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    
+    z-index: 999998 !important;
+}
+
+#aicb-floating-ad-bar.aicb-ad-visible {
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateY(0) translateX(-50%) !important; /* Centering for top/bottom bars */
+}
+
+.aicb-floating-ad-content {
+    position: relative !important;
+    background-color: #fff !important;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.3) !important;
+    border-radius: 8px !important;
+    line-height: 0 !important;
+    overflow: hidden !important;
+}
+
+.aicb-floating-ad-content > * {
+    line-height: initial !important;
+    display: block !important;
+}
+
+#aicb-close-floating-ad {
+    position: absolute !important;
+    top: -10px !important;
+    right: -10px !important;
+    cursor: pointer !important;
+    border: none !important;
+    background: #222 !important;
+    color: white !important;
+    border-radius: 50% !important;
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 18px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+    padding: 0 !important;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.3) !important;
+    z-index: 10 !important;
+    transition: transform 0.2s ease !important;
+}
+
+#aicb-close-floating-ad:hover {
+    transform: scale(1.1) !important;
+}
+
+/* --- Position Styles --- */
+
+.aicb-ad-pos-bottom-bar {
+    bottom: 15px !important;
+    left: 50% !important;
+    transform: translateY(150%) translateX(-50%) !important;
+}
+
+.aicb-ad-pos-top-bar {
+    top: 15px !important;
+    left: 50% !important;
+    transform: translateY(-150%) translateX(-50%) !important;
+}
+.aicb-ad-pos-top-bar.aicb-ad-visible {
+    transform: translateY(0) translateX(-50%) !important;
+}
+
+.aicb-ad-pos-bottom-left {
+    bottom: 20px !important;
+    left: 20px !important;
+    transform: translateY(150%) !important;
+    /* Reset centering transform for corners */
+    transform: translateY(150%) translateX(0) !important;
+}
+.aicb-ad-pos-bottom-left.aicb-ad-visible {
+     transform: translateY(0) translateX(0) !important;
+}
+
+
+.aicb-ad-pos-bottom-right {
+    bottom: 20px !important;
+    right: 20px !important;
+    left: auto !important; /* Override the 'left: 50%' for bars */
+    transform: translateY(150%) !important;
+    /* Reset centering transform for corners */
+    transform: translateY(150%) translateX(0) !important;
+}
+.aicb-ad-pos-bottom-right.aicb-ad-visible {
+     transform: translateY(0) translateX(0) !important;
+}
